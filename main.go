@@ -9,9 +9,11 @@ import (
 
 	"github.com/fauzanmh/olp-user/config"
 	_handler "github.com/fauzanmh/olp-user/handler"
+	_msAuth "github.com/fauzanmh/olp-user/repository/adapter/auth"
 	_mysqlRepo "github.com/fauzanmh/olp-user/repository/mysql"
 	_usecaseCourse "github.com/fauzanmh/olp-user/usecase/course"
 	_usecaseCourseCategory "github.com/fauzanmh/olp-user/usecase/course_category"
+	_usecaseMember "github.com/fauzanmh/olp-user/usecase/member"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
@@ -45,13 +47,18 @@ func main() {
 	}
 
 	// * repository
+	// database
 	mysqlRepo := _mysqlRepo.NewRepository(mysqlDB)
+	// adapter
+	authAdapter := _msAuth.NewProviderAuth(cfg)
 
 	// * usecase
 	// course usecase
 	courseUsecase := _usecaseCourse.NewCourseUseCase(cfg, mysqlRepo)
 	// course category usecase
 	courseCategoryUsecase := _usecaseCourseCategory.NewCourseCategoryUseCase(cfg, mysqlRepo)
+	// member usecase
+	memberUsecase := _usecaseMember.NewMemberUseCase(cfg, mysqlRepo, authAdapter)
 
 	// Middleware
 	e.Use(appMiddleware.EchoCORS())
@@ -69,6 +76,8 @@ func main() {
 	_handler.NewCourseHandler(routerAPI, courseUsecase)
 	// course category routes
 	_handler.NewCourseCategoryHandler(routerAPI, courseCategoryUsecase)
+	// member routes
+	_handler.NewMemberHandler(routerAPI, memberUsecase)
 
 	go runHTTPHandler(e, cfg)
 

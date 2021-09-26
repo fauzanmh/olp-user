@@ -1,0 +1,25 @@
+{
+    "api": {
+        "http": {
+            "port": ":8099"
+        }
+    },
+    "context": {
+        "timeout": 10
+    },
+    "database": {
+        "mysql": {
+            "host": "localhost",
+            "port": "3306",
+            "dbname": "olp",
+            "user": "root",
+            "password": ""
+        }
+    },
+    "microservice": {
+        "auth": {
+            "base_url": "http://localhost:8101",
+            "create_user": "/user"
+        }
+    }
+}

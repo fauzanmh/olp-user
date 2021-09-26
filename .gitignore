@@ -33,7 +33,6 @@
 # Configs
 main.yml
 main.json
-main.example.json
 .env
 
 ### SonarQube ###
