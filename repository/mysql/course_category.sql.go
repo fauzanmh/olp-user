@@ -2,23 +2,34 @@ package mysql
 
 import (
 	"context"
-	"database/sql"
 
-	"github.com/fauzanmh/olp-user/constant"
 	"github.com/fauzanmh/olp-user/entity"
 )
 
-const getOneCourseCategory = `-- name: GetOneCourseCategory :one
+const getAllCourseCategory = `-- name: GetAllCourseCategory :many
 SELECT id, name, total_used FROM course_categories
-WHERE id = ? AND deleted_at IS NULL
+WHERE deleted_at IS NULL
 `
 
-func (q *Queries) GetOneCourseCategory(ctx context.Context, id int32) (entity.GetOneCourseCategoryRow, error) {
-	row := q.queryRow(ctx, q.getOneCourseCategoryStmt, getOneCourseCategory, id)
-	var i entity.GetOneCourseCategoryRow
-	err := row.Scan(&i.ID, &i.Name, &i.TotalUsed)
-	if err == sql.ErrNoRows {
-		err = constant.ErrorMessageCourseCategoryNotFound
+func (q *Queries) GetAllCourseCategory(ctx context.Context) ([]entity.GetAllCourseCategoryRow, error) {
+	rows, err := q.query(ctx, q.getAllCourseCategoryStmt, getAllCourseCategory)
+	if err != nil {
+		return nil, err
 	}
-	return i, err
+	defer rows.Close()
+	items := []entity.GetAllCourseCategoryRow{}
+	for rows.Next() {
+		var i entity.GetAllCourseCategoryRow
+		if err := rows.Scan(&i.ID, &i.Name, &i.TotalUsed); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
