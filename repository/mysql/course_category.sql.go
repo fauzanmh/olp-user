@@ -33,3 +33,16 @@ func (q *Queries) GetAllCourseCategory(ctx context.Context) ([]entity.GetAllCour
 	}
 	return items, nil
 }
+
+const getPopularCourseCategory = `-- name: GetPopularCourseCategory :one
+SELECT id, name, total_used FROM course_categories
+WHERE deleted_at IS NULL ORDER BY total_used DESC
+LIMIT 1
+`
+
+func (q *Queries) GetPopularCourseCategory(ctx context.Context) (entity.GetPopularCourseCategoryRow, error) {
+	row := q.queryRow(ctx, q.getPopularCourseCategoryStmt, getPopularCourseCategory)
+	var i entity.GetPopularCourseCategoryRow
+	err := row.Scan(&i.ID, &i.Name, &i.TotalUsed)
+	return i, err
+}
