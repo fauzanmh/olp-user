@@ -20,6 +20,9 @@ func New(db DBTX) *Queries {
 func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	q := Queries{db: db}
 	var err error
+	if q.checkEmailStmt, err = db.PrepareContext(ctx, checkEmail); err != nil {
+		return nil, fmt.Errorf("error preparing query CheckEmail: %w", err)
+	}
 	if q.getAllCourseCategoryStmt, err = db.PrepareContext(ctx, getAllCourseCategory); err != nil {
 		return nil, fmt.Errorf("error preparing query GetAllCourseCategory: %w", err)
 	}
@@ -32,11 +35,19 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.getPopularCourseCategoryStmt, err = db.PrepareContext(ctx, getPopularCourseCategory); err != nil {
 		return nil, fmt.Errorf("error preparing query GetPopularCourseCategory: %w", err)
 	}
+	if q.registerStmt, err = db.PrepareContext(ctx, register); err != nil {
+		return nil, fmt.Errorf("error preparing query Register: %w", err)
+	}
 	return &q, nil
 }
 
 func (q *Queries) Close() error {
 	var err error
+	if q.checkEmailStmt != nil {
+		if cerr := q.checkEmailStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing checkEmailStmt: %w", cerr)
+		}
+	}
 	if q.getAllCourseCategoryStmt != nil {
 		if cerr := q.getAllCourseCategoryStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing getAllCourseCategoryStmt: %w", cerr)
@@ -55,6 +66,11 @@ func (q *Queries) Close() error {
 	if q.getPopularCourseCategoryStmt != nil {
 		if cerr := q.getPopularCourseCategoryStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing getPopularCourseCategoryStmt: %w", cerr)
+		}
+	}
+	if q.registerStmt != nil {
+		if cerr := q.registerStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing registerStmt: %w", cerr)
 		}
 	}
 	return err
@@ -96,19 +112,23 @@ func (q *Queries) queryRow(ctx context.Context, stmt *sql.Stmt, query string, ar
 type Queries struct {
 	db                           DBTX
 	tx                           *sql.Tx
+	checkEmailStmt               *sql.Stmt
 	getAllCourseCategoryStmt     *sql.Stmt
 	getCourseDetailStmt          *sql.Stmt
 	getCoursesStmt               *sql.Stmt
 	getPopularCourseCategoryStmt *sql.Stmt
+	registerStmt                 *sql.Stmt
 }
 
 func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 	return &Queries{
 		db:                           tx,
 		tx:                           tx,
+		checkEmailStmt:               q.checkEmailStmt,
 		getAllCourseCategoryStmt:     q.getAllCourseCategoryStmt,
 		getCourseDetailStmt:          q.getCourseDetailStmt,
 		getCoursesStmt:               q.getCoursesStmt,
 		getPopularCourseCategoryStmt: q.getPopularCourseCategoryStmt,
+		registerStmt:                 q.registerStmt,
 	}
 }
