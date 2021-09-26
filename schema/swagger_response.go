@@ -5,9 +5,9 @@ import (
 	"github.com/fauzanmh/olp-user/schema/course_category"
 )
 
-type SwaggerGetAllCoursesResponse struct {
+type SwaggerGetCoursesResponse struct {
 	Base
-	Data course.GetAllCoursesResponse `json:"data"`
+	Data course.GetCoursesResponse `json:"data"`
 }
 
 type SwaggerGetAllCourseCategoriesResponse struct {
