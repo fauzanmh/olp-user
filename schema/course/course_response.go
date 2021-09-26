@@ -1,6 +1,6 @@
 package course
 
-type GetCoursesResponse struct {
+type CourseResponse struct {
 	ID                 int64  `json:"id"`
 	CourseCategoryID   int32  `json:"course_category_id"`
 	Name               string `json:"name"`
