@@ -27,6 +27,7 @@ func NewCourseHandler(e *echo.Group, usecase usecaseCourse.Usecase) {
 // @Tags Course
 // @Accept json
 // @Produce json
+// @Param search query string false "search course by name"
 // @Success 200 {object} schema.SwaggerGetCoursesResponse
 // @Failure 400 {object} schema.Base
 // @Failure 401 {object} schema.Base
@@ -34,9 +35,22 @@ func NewCourseHandler(e *echo.Group, usecase usecaseCourse.Usecase) {
 // @Failure 500 {object} schema.Base
 // @Router /v1/course [get]
 func (h *CourseHandler) Get(c echo.Context) error {
+	req := course.CourseGetRequest{}
 	ctx := c.Request().Context()
 
-	data, err := h.usecase.Get(ctx)
+	// parsing
+	err := util.ParsingParameter(c, &req)
+	if err != nil {
+		return util.ErrorParsing(c, err, nil)
+	}
+
+	// validate
+	err = util.ValidateParameter(c, &req)
+	if err != nil {
+		return util.ErrorValidate(c, err, nil)
+	}
+
+	data, err := h.usecase.Get(ctx, &req)
 	if err != nil {
 		return util.ErrorResponse(c, err, nil)
 	}
