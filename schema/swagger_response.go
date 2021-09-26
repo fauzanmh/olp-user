@@ -7,7 +7,7 @@ import (
 
 type SwaggerGetCoursesResponse struct {
 	Base
-	Data course.GetCoursesResponse `json:"data"`
+	Data []course.CourseResponse `json:"data"`
 }
 
 type SwaggerGetAllCourseCategoriesResponse struct {
@@ -18,4 +18,9 @@ type SwaggerGetAllCourseCategoriesResponse struct {
 type SwaggerGetPopularCourseCategoryResponse struct {
 	Base
 	Data course_category.GetCourseCategory `json:"data"`
+}
+
+type SwaggerGetCourseDetailResponse struct {
+	Base
+	Data course.CourseResponse `json:"data"`
 }

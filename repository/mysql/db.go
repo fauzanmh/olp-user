@@ -23,6 +23,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.getAllCourseCategoryStmt, err = db.PrepareContext(ctx, getAllCourseCategory); err != nil {
 		return nil, fmt.Errorf("error preparing query GetAllCourseCategory: %w", err)
 	}
+	if q.getCourseDetailStmt, err = db.PrepareContext(ctx, getCourseDetail); err != nil {
+		return nil, fmt.Errorf("error preparing query GetCourseDetail: %w", err)
+	}
 	if q.getCoursesStmt, err = db.PrepareContext(ctx, getCourses); err != nil {
 		return nil, fmt.Errorf("error preparing query GetCourses: %w", err)
 	}
@@ -37,6 +40,11 @@ func (q *Queries) Close() error {
 	if q.getAllCourseCategoryStmt != nil {
 		if cerr := q.getAllCourseCategoryStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing getAllCourseCategoryStmt: %w", cerr)
+		}
+	}
+	if q.getCourseDetailStmt != nil {
+		if cerr := q.getCourseDetailStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing getCourseDetailStmt: %w", cerr)
 		}
 	}
 	if q.getCoursesStmt != nil {
@@ -89,6 +97,7 @@ type Queries struct {
 	db                           DBTX
 	tx                           *sql.Tx
 	getAllCourseCategoryStmt     *sql.Stmt
+	getCourseDetailStmt          *sql.Stmt
 	getCoursesStmt               *sql.Stmt
 	getPopularCourseCategoryStmt *sql.Stmt
 }
@@ -98,6 +107,7 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		db:                           tx,
 		tx:                           tx,
 		getAllCourseCategoryStmt:     q.getAllCourseCategoryStmt,
+		getCourseDetailStmt:          q.getCourseDetailStmt,
 		getCoursesStmt:               q.getCoursesStmt,
 		getPopularCourseCategoryStmt: q.getPopularCourseCategoryStmt,
 	}
