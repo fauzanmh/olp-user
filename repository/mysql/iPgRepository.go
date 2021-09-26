@@ -10,7 +10,7 @@ import (
 type Repository interface {
 	// Courses
 	GetCourseDetail(ctx context.Context, id int64) (entity.GetCourseDetailRow, error)
-	GetCourses(ctx context.Context, search string) ([]entity.GetCoursesRow, error)
+	GetCourses(ctx context.Context, search, sort string) ([]entity.GetCoursesRow, error)
 
 	// Course Category
 	GetAllCourseCategory(ctx context.Context) ([]entity.GetAllCourseCategoryRow, error)

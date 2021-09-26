@@ -22,6 +22,8 @@ func NewCourseCategoryUseCase(config *appInit.Config, mysqlRepo mysqlRepo.Reposi
 
 // --- get all course categories --- ///
 func (u *usecase) Get(ctx context.Context) (res []course_category.GetCourseCategory, err error) {
+	res = []course_category.GetCourseCategory{}
+
 	// get from database
 	data, err := u.mysqlRepo.GetAllCourseCategory(ctx)
 	if err != nil {
