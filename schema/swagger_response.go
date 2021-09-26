@@ -12,5 +12,10 @@ type SwaggerGetAllCoursesResponse struct {
 
 type SwaggerGetAllCourseCategoriesResponse struct {
 	Base
-	Data []course_category.GetAllCourseCategoriesResponse `json:"data"`
+	Data []course_category.GetCourseCategory `json:"data"`
+}
+
+type SwaggerGetPopularCourseCategoryResponse struct {
+	Base
+	Data course_category.GetCourseCategory `json:"data"`
 }

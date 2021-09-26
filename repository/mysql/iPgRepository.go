@@ -11,6 +11,7 @@ type Repository interface {
 
 	// Course Category
 	GetAllCourseCategory(ctx context.Context) ([]entity.GetAllCourseCategoryRow, error)
+	GetPopularCourseCategory(ctx context.Context) (entity.GetPopularCourseCategoryRow, error)
 
 	//Tx
 	BeginTx(ctx context.Context) (*sql.Tx, error)

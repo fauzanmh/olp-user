@@ -18,3 +18,9 @@ type GetAllCourseCategoryRow struct {
 	Name      string `json:"name"`
 	TotalUsed int32  `json:"total_used"`
 }
+
+type GetPopularCourseCategoryRow struct {
+	ID        int32  `json:"id"`
+	Name      string `json:"name"`
+	TotalUsed int32  `json:"total_used"`
+}

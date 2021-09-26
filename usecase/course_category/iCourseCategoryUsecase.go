@@ -7,5 +7,6 @@ import (
 )
 
 type Usecase interface {
-	Get(ctx context.Context) (res []course_category.GetAllCourseCategoriesResponse, err error)
+	Get(ctx context.Context) (res []course_category.GetCourseCategory, err error)
+	GetPopular(ctx context.Context) (res course_category.GetCourseCategory, err error)
 }
