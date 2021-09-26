@@ -11,7 +11,7 @@ import (
 	_handler "github.com/fauzanmh/olp-user/handler"
 	_mysqlRepo "github.com/fauzanmh/olp-user/repository/mysql"
 	_usecaseCourse "github.com/fauzanmh/olp-user/usecase/course"
-	_usecaseStatistic "github.com/fauzanmh/olp-user/usecase/statistic"
+	_usecaseCourseCategory "github.com/fauzanmh/olp-user/usecase/course_category"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
@@ -50,8 +50,8 @@ func main() {
 	// * usecase
 	// course usecase
 	courseUsecase := _usecaseCourse.NewCourseUseCase(cfg, mysqlRepo)
-	// statistic usecase
-	statisticUsecase := _usecaseStatistic.NewStatisticUseCase(cfg, mysqlRepo)
+	// course category usecase
+	courseCategoryUsecase := _usecaseCourseCategory.NewCourseCategoryUseCase(cfg, mysqlRepo)
 
 	// Middleware
 	e.Use(appMiddleware.EchoCORS())
@@ -67,8 +67,8 @@ func main() {
 	routerAPI.GET("/swagger/*", echoSwagger.WrapHandler)
 	// course routes
 	_handler.NewCourseHandler(routerAPI, courseUsecase)
-	// statistic routes
-	_handler.NewStatisticHandler(routerAPI, statisticUsecase)
+	// course category routes
+	_handler.NewCourseCategoryHandler(routerAPI, courseCategoryUsecase)
 
 	go runHTTPHandler(e, cfg)
 

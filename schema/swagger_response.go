@@ -2,7 +2,7 @@ package schema
 
 import (
 	"github.com/fauzanmh/olp-user/schema/course"
-	"github.com/fauzanmh/olp-user/schema/statistic"
+	"github.com/fauzanmh/olp-user/schema/course_category"
 )
 
 type SwaggerGetAllCoursesResponse struct {
@@ -10,7 +10,7 @@ type SwaggerGetAllCoursesResponse struct {
 	Data course.GetAllCoursesResponse `json:"data"`
 }
 
-type SwaggerGetStatisticResponse struct {
+type SwaggerGetAllCourseCategoriesResponse struct {
 	Base
-	Data statistic.GetStatisticResponse `json:"data"`
+	Data []course_category.GetAllCourseCategoriesResponse `json:"data"`
 }
