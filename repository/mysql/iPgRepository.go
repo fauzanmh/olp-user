@@ -8,6 +8,8 @@ import (
 )
 
 type Repository interface {
+	// Courses
+	GetCourses(ctx context.Context) ([]entity.GetCoursesRow, error)
 
 	// Course Category
 	GetAllCourseCategory(ctx context.Context) ([]entity.GetAllCourseCategoryRow, error)
