@@ -6,4 +6,5 @@ type CourseDetailRequest struct {
 
 type CourseGetRequest struct {
 	Search string `query:"search" json:"-"`
+	Sort   string `query:"sort" json:"-" validate:"omitempty,oneof=lowest_price highest_price free"`
 }

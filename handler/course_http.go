@@ -28,6 +28,7 @@ func NewCourseHandler(e *echo.Group, usecase usecaseCourse.Usecase) {
 // @Accept json
 // @Produce json
 // @Param search query string false "search course by name"
+// @Param sort query string false "sort by {lowest price|highest price|free}"
 // @Success 200 {object} schema.SwaggerGetCoursesResponse
 // @Failure 400 {object} schema.Base
 // @Failure 401 {object} schema.Base

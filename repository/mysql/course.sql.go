@@ -7,7 +7,6 @@ import (
 
 	"github.com/fauzanmh/olp-user/constant"
 	"github.com/fauzanmh/olp-user/entity"
-	"go.uber.org/zap"
 )
 
 const getCourseDetail = `-- name: GetCourseDetail :one
@@ -42,12 +41,11 @@ FROM courses c
 INNER JOIN (
     SELECT id as id_course_category, name as course_category_name FROM course_categories
 ) cc ON c.course_category_id = cc.id_course_category
-WHERE deleted_at IS NULL AND name LIKE "%s"
+WHERE deleted_at IS NULL AND name LIKE "%s" %s
 `
 
-func (q *Queries) GetCourses(ctx context.Context, search string) ([]entity.GetCoursesRow, error) {
-	query := fmt.Sprintf(getCourses, search)
-	zap.S().Error(query)
+func (q *Queries) GetCourses(ctx context.Context, search, sort string) ([]entity.GetCoursesRow, error) {
+	query := fmt.Sprintf(getCourses, search, sort)
 	rows, err := q.query(ctx, q.getCoursesStmt, query)
 	if err != nil {
 		return nil, err
