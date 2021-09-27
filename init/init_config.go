@@ -32,6 +32,7 @@ type Config struct {
 		Auth struct {
 			BaseURL    string `mapstructure:"base_url"`
 			CreateUser string `mapstructure:"create_user"`
+			DeleteUser string `mapstructure:"delete_user"`
 		} `mapstructure:"auth"`
 	} `mapstructure:"microservice"`
 }
