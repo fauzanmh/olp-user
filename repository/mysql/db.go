@@ -23,6 +23,12 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.checkEmailStmt, err = db.PrepareContext(ctx, checkEmail); err != nil {
 		return nil, fmt.Errorf("error preparing query CheckEmail: %w", err)
 	}
+	if q.checkMemberStmt, err = db.PrepareContext(ctx, checkMember); err != nil {
+		return nil, fmt.Errorf("error preparing query CheckMember: %w", err)
+	}
+	if q.deleteMemberStmt, err = db.PrepareContext(ctx, deleteMember); err != nil {
+		return nil, fmt.Errorf("error preparing query DeleteMember: %w", err)
+	}
 	if q.getAllCourseCategoryStmt, err = db.PrepareContext(ctx, getAllCourseCategory); err != nil {
 		return nil, fmt.Errorf("error preparing query GetAllCourseCategory: %w", err)
 	}
@@ -46,6 +52,16 @@ func (q *Queries) Close() error {
 	if q.checkEmailStmt != nil {
 		if cerr := q.checkEmailStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing checkEmailStmt: %w", cerr)
+		}
+	}
+	if q.checkMemberStmt != nil {
+		if cerr := q.checkMemberStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing checkMemberStmt: %w", cerr)
+		}
+	}
+	if q.deleteMemberStmt != nil {
+		if cerr := q.deleteMemberStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing deleteMemberStmt: %w", cerr)
 		}
 	}
 	if q.getAllCourseCategoryStmt != nil {
@@ -113,6 +129,8 @@ type Queries struct {
 	db                           DBTX
 	tx                           *sql.Tx
 	checkEmailStmt               *sql.Stmt
+	checkMemberStmt              *sql.Stmt
+	deleteMemberStmt             *sql.Stmt
 	getAllCourseCategoryStmt     *sql.Stmt
 	getCourseDetailStmt          *sql.Stmt
 	getCoursesStmt               *sql.Stmt
@@ -125,6 +143,8 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		db:                           tx,
 		tx:                           tx,
 		checkEmailStmt:               q.checkEmailStmt,
+		checkMemberStmt:              q.checkMemberStmt,
+		deleteMemberStmt:             q.deleteMemberStmt,
 		getAllCourseCategoryStmt:     q.getAllCourseCategoryStmt,
 		getCourseDetailStmt:          q.getCourseDetailStmt,
 		getCoursesStmt:               q.getCoursesStmt,

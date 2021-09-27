@@ -79,3 +79,46 @@ func (u *usecase) Register(ctx context.Context, req *member.RegisterRequest) (er
 
 	return
 }
+
+// --- delete member --- //
+func (u *usecase) DeleteMember(ctx context.Context, req *member.DeleteMemberRequest) (err error) {
+	// begin transaction
+	tx, err := u.mysqlRepo.BeginTx(ctx)
+	if err != nil {
+		return
+	}
+
+	// check if member exists
+	member, err := u.mysqlRepo.WithTx(tx).CheckMember(ctx, req.ID)
+	if err != nil {
+		u.mysqlRepo.RollbackTx(tx)
+		return
+	}
+	if member.DeletedAt.Valid {
+		u.mysqlRepo.RollbackTx(tx)
+		err = constant.ErrorMessageUserHasBeenDeleted
+		return
+	}
+
+	// delete user from database
+	deleteMemberParams := &entity.DeleteMemberParams{
+		ID:        req.ID,
+		DeletedAt: sql.NullInt64{Int64: time.Now().Unix(), Valid: true},
+	}
+	err = u.mysqlRepo.WithTx(tx).DeleteMember(ctx, deleteMemberParams)
+	if err != nil {
+		u.mysqlRepo.RollbackTx(tx)
+		return
+	}
+
+	err = u.authAdapter.DeleteUser(ctx, req.ID)
+	if err != nil {
+		u.mysqlRepo.RollbackTx(tx)
+		return
+	}
+
+	// commit transaction
+	u.mysqlRepo.CommitTx(tx)
+
+	return
+}

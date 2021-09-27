@@ -8,3 +8,7 @@ type RegisterRequest struct {
 	Password             string `json:"password" validate:"required,gte=8,eqfield=PasswordConfirmation"`
 	PasswordConfirmation string `json:"password_confirmation" validate:"required"`
 }
+
+type DeleteMemberRequest struct {
+	ID int64 `param:"id"`
+}

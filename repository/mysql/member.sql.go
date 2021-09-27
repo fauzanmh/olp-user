@@ -2,7 +2,9 @@ package mysql
 
 import (
 	"context"
+	"database/sql"
 
+	"github.com/fauzanmh/olp-user/constant"
 	"github.com/fauzanmh/olp-user/entity"
 )
 
@@ -41,4 +43,33 @@ func (q *Queries) Register(ctx context.Context, arg *entity.RegisterParams) (int
 	}
 
 	return id, err
+}
+
+const checkMember = `-- name: CheckMember :one
+SELECT name, email, address, deleted_at FROM members WHERE id = ?
+`
+
+func (q *Queries) CheckMember(ctx context.Context, id int64) (entity.CheckMemberRow, error) {
+	row := q.queryRow(ctx, q.checkMemberStmt, checkMember, id)
+	var i entity.CheckMemberRow
+	err := row.Scan(
+		&i.Name,
+		&i.Email,
+		&i.Address,
+		&i.DeletedAt,
+	)
+	if err == sql.ErrNoRows {
+		err = constant.ErrorMysqlDataNotFound
+	}
+	return i, err
+}
+
+const deleteMember = `-- name: DeleteMember :exec
+UPDATE members SET deleted_at = ?
+WHERE id = ?
+`
+
+func (q *Queries) DeleteMember(ctx context.Context, arg *entity.DeleteMemberParams) error {
+	_, err := q.exec(ctx, q.deleteMemberStmt, deleteMember, arg.DeletedAt, arg.ID)
+	return err
 }

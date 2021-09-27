@@ -18,6 +18,7 @@ func NewMemberHandler(e *echo.Group, usecase usecase.Usecase) {
 
 	routerV1 := e.Group("/v1")
 	routerV1.POST("/register", handler.Register)
+	routerV1.DELETE("/member/:id", handler.DeleteMember)
 }
 
 // Register godoc
@@ -50,6 +51,31 @@ func (h *MemberHandler) Register(c echo.Context) error {
 	}
 
 	err = h.usecase.Register(ctx, &req)
+	if err != nil {
+		return util.ErrorResponse(c, err, nil)
+	}
+
+	return util.SuccessResponse(c, "success register", nil)
+}
+
+// DeleteMember nodoc
+func (h *MemberHandler) DeleteMember(c echo.Context) error {
+	req := member.DeleteMemberRequest{}
+	ctx := c.Request().Context()
+
+	// parsing
+	err := util.ParsingParameter(c, &req)
+	if err != nil {
+		return util.ErrorParsing(c, err, nil)
+	}
+
+	// validate
+	err = util.ValidateParameter(c, &req)
+	if err != nil {
+		return util.ErrorValidate(c, err, nil)
+	}
+
+	err = h.usecase.DeleteMember(ctx, &req)
 	if err != nil {
 		return util.ErrorResponse(c, err, nil)
 	}
