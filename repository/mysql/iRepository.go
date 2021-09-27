@@ -10,7 +10,7 @@ import (
 type Repository interface {
 	// Member
 	CheckEmail(ctx context.Context, email string) (bool, error)
-	Register(ctx context.Context, arg *entity.RegisterParams) error
+	Register(ctx context.Context, arg *entity.RegisterParams) (int64, error)
 
 	// Courses
 	GetCourseDetail(ctx context.Context, id int64) (entity.GetCourseDetailRow, error)

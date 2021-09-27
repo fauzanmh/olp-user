@@ -43,12 +43,16 @@ func (auth *Auth) CreateUser(ctx context.Context, req *entity.CreateUserRequest)
 
 	response, err := client.CallWithJson(ctx)
 	if err != nil {
-		err = fmt.Errorf("got unsucceful response from auth api")
 		return
 	}
 
 	// log response
 	zap.S().Named("auth.create-user.response").Info(response.Body)
+
+	if response.StatusCode != 200 {
+		err = fmt.Errorf("got unsucceful response from auth api")
+		return
+	}
 
 	return
 }

@@ -64,7 +64,10 @@ func (ac *APICall) CallWithJson(ctx context.Context) (result URLHttpResponse, er
 	client := httpclient.NewClient()
 
 	// Create an http.Request instance
-	req, _ := http.NewRequest(ac.Method, ac.URL, bytes.NewBuffer([]byte(ac.FormParam)))
+	req, err := http.NewRequest(ac.Method, ac.URL, bytes.NewBuffer([]byte(ac.FormParam)))
+	if err != nil {
+		return
+	}
 	req.Header.Add("Content-Type", "application/json")
 	req = req.WithContext(ctx)
 	for index, value := range ac.Header {
