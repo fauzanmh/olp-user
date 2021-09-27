@@ -56,7 +56,7 @@ func (u *usecase) Register(ctx context.Context, req *member.RegisterRequest) (er
 		CreatedAt: time.Now().Unix(),
 		UpdatedAt: sql.NullInt64{Int64: time.Now().Unix(), Valid: true},
 	}
-	err = u.mysqlRepo.WithTx(tx).Register(ctx, registerParams)
+	id, err := u.mysqlRepo.WithTx(tx).Register(ctx, registerParams)
 	if err != nil {
 		u.mysqlRepo.RollbackTx(tx)
 		return
@@ -66,6 +66,7 @@ func (u *usecase) Register(ctx context.Context, req *member.RegisterRequest) (er
 	createUserRequest := &microservice.CreateUserRequest{
 		Username: req.Username,
 		Password: req.Password,
+		MemberID: id,
 	}
 	err = u.authAdapter.CreateUser(ctx, createUserRequest)
 	if err != nil {

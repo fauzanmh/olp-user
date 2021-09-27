@@ -22,13 +22,23 @@ INSERT INTO members (name, email, address, created_at, updated_at)
 VALUES (?, ?, ?, ?, ?)
 `
 
-func (q *Queries) Register(ctx context.Context, arg *entity.RegisterParams) error {
-	_, err := q.exec(ctx, q.registerStmt, register,
+func (q *Queries) Register(ctx context.Context, arg *entity.RegisterParams) (int64, error) {
+	var id int64
+	res, err := q.exec(ctx, q.registerStmt, register,
 		arg.Name,
 		arg.Email,
 		arg.Address,
 		arg.CreatedAt,
 		arg.UpdatedAt,
 	)
-	return err
+	if err != nil {
+		return id, err
+	}
+
+	id, err = res.LastInsertId()
+	if err != nil {
+		return id, err
+	}
+
+	return id, err
 }
